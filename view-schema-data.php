@@ -12,11 +12,11 @@
 defined( 'ABSPATH' ) || die( 'No direct script access allowed!' );
 
 /**
- * Auto Import Table View class
+ * TablesPress Schema Data View class
  *
  * @since 1.0.0
  */
-class TablePress_Auto_Import_View extends TablePress_Edit_View {
+class TablePress_Schema_Data_View extends TablePress_Edit_View {
 
 	protected $schema_data;
 
@@ -33,17 +33,17 @@ class TablePress_Auto_Import_View extends TablePress_Edit_View {
 			'option_name' => 'tablepress_schema_data',
 			'default_value' => array()
 		);
-		$this->auto_import_config = TablePress::load_class( 'TablePress_WP_Option', 'class-wp_option.php', 'classes', $params );
+		$this->schema_data = TablePress::load_class( 'TablePress_WP_Option', 'class-wp_option.php', 'classes', $params );
 		parent::setup( $action, $data );
 		$this->add_meta_box( 'tablepress-schema-data', 'Schema Data', array( $this, 'postbox_schema_data' ), 'additional' );
 		$this->process_action_messages( array(
-			'error_auto_import' => 'Error: The Auto Import configuration could not be saved.',
-			'success_auto_import' => 'The Auto Import configuration was saved successfully.'
+			'error_schema_data' => 'Error: Your tables Schema data could not be saved.',
+			'success_schema_data' => 'Your tables Schema data was saved successfully.'
 		) );
 	}
 
 	/**
-	 * Print the form for the Auto Update tables list
+	 * Print the form for the Schema Data
 	 *
 	 * @since 1.0.0
 	 */
@@ -82,4 +82,4 @@ class TablePress_Auto_Import_View extends TablePress_Edit_View {
 
 
 	}
-} // class TablePress_Auto_Import_View
+} // class TablePress_Schema_Data_View

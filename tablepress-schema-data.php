@@ -38,49 +38,60 @@ class TablePress_Schema_Data {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		// Register hook to add and remove cron hooks, when the plugin is deactivated
-		register_deactivation_hook( __FILE__, array( __CLASS__, 'deactivation_hook' ) );
 
+		// @TODO Need to build this hook once I figure out how I am saving data
+		// Register hook to remove Schema Data, when the plugin is deactivated
+		//register_deactivation_hook( __FILE__, array( __CLASS__, 'deactivation_hook' ) );
+
+		// @TODO Need to build this once we get data to save
 		// Adding a filter to tablepress_cell_css_class in class-render.php
 		// add_filter( '', array( __CLASS__, '' ) );
 		// add_action( '', array( __CLASS__, '' ) );
 
-
-		// Load the Auto Import View
+		// Load the Schema Data View
 		if ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 			add_action( 'tablepress_run', array( $this, 'run' ) );
 		}
 	}
 
 	/**
-	 * Clear/Unschedule the cron hook on plugin deactivation, and delete options
+	 *
+	 * @TODO Will build this once I figure out a solid way to save data.
+	 *
+	 * Remove Schema Data on plugin deactivation, and delete options
 	 *
 	 * @since 1.0.0
 	 */
-	public static function deactivation_hook() {
-		delete_option( 'tablepress_schema_data' );
-	}
+	//public static function deactivation_hook() {
+	//	delete_option( 'tablepress_schema_data' );
+	//}
 
 	/**
-	 * Start-up the TablePress Auto Import Controller, which is run when TablePress is run
+	 * Start-up the TablePress Schema Data Controller, which is run when TablePress is run
 	 *
 	 * @since 1.0.0
 	 */
 	public function run() {
-		add_filter( 'tablepress_load_file_full_path', array( $this, 'change_import_view_full_path' ), 10, 3 );
-		add_filter( 'tablepress_load_class_name', array( $this, 'change_view_import_class_name' ) );
+
+		// Change View Edit file path, to load extended view
+		add_filter( 'tablepress_load_file_full_path', array( $this, 'change_edit_view_full_path' ), 10, 3 );
+
+		// Change View Edit class name, to load extended view
+		add_filter( 'tablepress_load_class_name', array( $this, 'change_view_edit_class_name' ) );
+
+		//
 		add_action( 'admin_post_tablepress_import', array( $this, 'handle_post_action_auto_import' ), 9 ); // do this before intended TablePress method is called, to be able to remove the action
 	}
 
 	/**
-	 * Change View Import file path, to load extended view
+	 * Change View Edit file path, to load extended view
 	 *
 	 * @since 1.0.0
 	 */
-	public function change_import_view_full_path( $full_path, $file, $folder ) {
+	public function change_edit_view_full_path( $full_path, $file, $folder ) {
 		if ( 'view-edit.php' == $file ) {
 			require_once $full_path; // load desired file first, as we derive from it in the new $full_path file
-			$full_path = plugin_dir_path( __FILE__ ) . 'view-auto-import.php';
+			$full_path = plugin_dir_path( __FILE__ ) . 'view-schema-data.php';
 		}
 		return $full_path;
 	}
@@ -90,15 +101,15 @@ class TablePress_Schema_Data {
 	 *
 	 * @since 1.0.0
 	 */
-	public function change_view_import_class_name( $class ) {
+	public function change_view_edit_class_name( $class ) {
 		if ( 'TablePress_Edit_View' == $class ) {
-			$class = 'TablePress_Auto_Import_View';
+			$class = 'TablePress_Schema_Data_View';
 		}
 		return $class;
 	}
 
 	/**
-	 * Save Auto Import Configuration
+	 * Save Schema Data to table.
 	 *
 	 * @since 1.0.0
 	 */
@@ -117,7 +128,7 @@ class TablePress_Schema_Data {
 		}
 
 		if ( empty( $_POST['schema_data'] ) || ! is_array( $_POST['schema_data'] ) ) {
-			TablePress::redirect( array( 'action' => 'import', 'message' => 'error_auto_import' ) );
+			TablePress::redirect( array( 'action' => 'import', 'message' => 'error_schema_data' ) );
 		} else {
 			$auto_import = stripslashes_deep( $_POST['schema_data'] );
 		}
@@ -131,7 +142,7 @@ class TablePress_Schema_Data {
 
 		$result = $schema_data->update( $config );
 
-		TablePress::redirect( array( 'action' => 'import', 'message' => 'success_auto_import' ) );
+		TablePress::redirect( array( 'action' => 'import', 'message' => 'success_schema_data' ) );
 	}
 
 } // end class

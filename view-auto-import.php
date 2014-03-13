@@ -48,42 +48,38 @@ class TablePress_Auto_Import_View extends TablePress_Edit_View {
 	 * @since 1.0.0
 	 */
 	public function postbox_schema_data( $data, $box ) {
+		$id = $data['table']['id'];
 		$table = $data['table']['data'];
 		$options = $data['table']['options'];
-		$visibility = $data['table']['visibility'];
 		$rows = count( $table );
 		$columns = count( $table[0] );
 		echo '<table class="widefat" cellspacing="0">' . "\n";
 		echo '<tr id="">' . "\n";
 		echo '<th>Itemtype</th>' . "\n";
-		foreach ( $table as $row_idx => $row_data ) {
-			$row = $row_idx + 1;
-			$classes = array();
-			foreach ( $row_data as $col_idx => $cell ) {
-				if ( 1 == $row && !empty($cell)){
-					$cell = esc_textarea( $cell ); // sanitize, so that HTML is possible in table cells
-					echo "\t\t\t<th class=\"head{$column_class}\">{$cell} Itemprop</th>\n";
-				}
-			}
+		foreach ( $table[0] as $itm_typ => $item_prop ) {
+			$item_prop = esc_textarea( $item_prop ); // sanitize, so that HTML is possible in table cells
+			echo "\t\t\t" . '<th class="head">' . $item_prop . ' Itemprop</th>' . "\n";
 		}
 		echo '</tr>' . "\n";
 		echo '</thead>' . "\n";
 		echo '<tbody id="">' . "\n";
 		echo "\t\t<tr>\n";
 		for ( $col_idx = 0; $col_idx < $columns; $col_idx++ ) {
-			$column_class = '';
-			if ( 0 === $visibility['columns'][ $col_idx ] ) {
-				$column_class = ' column-hidden';
-			}
 			//Build Our Header
-			echo '<td><input type="text" id="" class="" name="" value="' . esc_attr( $options['datatables_custom_commands'] ) . '" /></td>';
+			$data_id = $id . '-' . $col_idx;
+			echo '<td><input type="text" id="' . $data_id . '" class="" name="" value="' . esc_attr( $options[$data_id] ) . '" /></td>';
 		}
-		echo "\t\t</tr>\n";
+		echo "\t\t" . '</tr>' . "\n";
 		echo '</tbody>' . "\n";
 		echo '</table>' . "\n";
-		echo "<input type=\"hidden\" id=\"number-rows\" name=\"table[number][rows]\" value=\"{$rows}\" />" . "\n";
-		echo "<input type=\"hidden\" id=\"number-columns\" name=\"table[number][columns]\" value=\"{$columns}\" />";
-		echo '<input type="submit" value="Save Schema Data" class="button button-large submit_auto_import_config" name="submit_auto_import_config" />';
+		echo '<input type="hidden" id="number-rows" name="table[number][rows]" value="' . $rows . '" />' . "\n";
+		echo '<input type="hidden" id="number-columns" name="table[number][columns]" value="' . $columns . '" />';
+		echo '<input type="submit" value="Save Schema Data" class="button button-large submit_schema_data" name="submit_schema_data" />';
+
+		echo '<pre>' . "\n";
+		print_r($options);
+		echo '</pre>' . "\n";
+
 
 	}
 } // class TablePress_Auto_Import_View

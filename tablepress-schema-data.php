@@ -103,56 +103,33 @@ class TablePress_Schema_Data {
 	 * @since 1.0.0
 	 */
 	public function handle_post_action_auto_import() {
-		if ( ! isset( $_POST['submit_auto_import_config'] ) ) {
+		if ( ! isset( $_POST['submit_schema_data'] ) ) {
 			return;
 		}
 
 		// remove TablePress Import action handling
-		remove_action( 'admin_post_tablepress_import', array( TablePress::$controller, 'handle_post_action_import' ) );
+		remove_action( 'admin_post_tablepress_import', array( TablePress::$controller, 'handle_post_action_edit' ) );
 
-		TablePress::check_nonce( 'import' );
+		TablePress::check_nonce( 'edit', $edit_table['id'], 'nonce-edit-table' );
 
-		if ( ! current_user_can( 'tablepress_import_tables' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+		if ( ! current_user_can( 'tablepress_edit_table', $edit_table['id'] ) ) {
+			wp_die( __( 'You do not have sufficient permissions to access this page.', 'default' ) );
 		}
 
-		if ( empty( $_POST['auto_import'] ) || ! is_array( $_POST['auto_import'] ) ) {
+		if ( empty( $_POST['schema_data'] ) || ! is_array( $_POST['schema_data'] ) ) {
 			TablePress::redirect( array( 'action' => 'import', 'message' => 'error_auto_import' ) );
 		} else {
-			$auto_import = stripslashes_deep( $_POST['auto_import'] );
+			$auto_import = stripslashes_deep( $_POST['schema_data'] );
 		}
 
 		$params = array(
 			'option_name' => 'tablepress_schema_data',
 			'default_value' => array()
 		);
+
 		$schema_data = TablePress::load_class( 'TablePress_WP_Option', 'class-wp_option.php', 'classes', $params );
 
-		$schedule = isset( $_POST['auto_import_schedule'] ) ? $_POST['auto_import_schedule'] : 'daily';
-		$config = array( '#schedule' => $schedule ); // '#' makes sure that this is not overwritten by a table ID, as these can not contain '#'
-		foreach ( $auto_import as $table_id => $table ) {
-			$table['auto_import'] = ( isset( $table['auto_import'] ) && 'true' == $table['auto_import'] ) ? true : false;
-			$table['last_auto_import'] = '-';
-			if ( ! isset( $table['source'] ) ) {
-				$table['source'] = 'http://';
-			}
-			if ( ! isset( $table['source_type'] ) ) {
-				$table['source_type'] = 'url';
-			}
-			if ( ! isset( $table['source_format'] ) ) {
-				$table['source_format'] = 'csv';
-			}
-			// Only save things for tables that have changes and not just the default settings
-			if ( $table['auto_import'] || 'http://' != $table['source'] || 'url' != $table['source_type'] || 'csv' != $table['source_format'] ) {
-				$config[ (string) $table['id'] ] = $table;
-			}
-		}
 		$result = $schema_data->update( $config );
-
-		wp_clear_scheduled_hook( 'tablepress_table_auto_import_hook' );
-		if ( ! wp_next_scheduled( 'tablepress_table_auto_import_hook' ) ) {
-			wp_schedule_event( time(), $schedule, 'tablepress_table_auto_import_hook' );
-		}
 
 		TablePress::redirect( array( 'action' => 'import', 'message' => 'success_auto_import' ) );
 	}

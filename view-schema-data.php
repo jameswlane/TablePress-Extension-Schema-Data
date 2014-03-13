@@ -53,6 +53,7 @@ class TablePress_Schema_Data_View extends TablePress_Edit_View {
 		$options = $data['table']['options'];
 		$rows = count( $table );
 		$columns = count( $table[0] );
+		echo '<input type="submit" value="Save Schema Data" class="button button-large submit_schema_data" name="submit_schema_data" />';
 		echo '<table class="widefat" cellspacing="0">' . "\n";
 		echo '<tr id="">' . "\n";
 		echo '<th>Itemtype</th>' . "\n";
@@ -66,8 +67,9 @@ class TablePress_Schema_Data_View extends TablePress_Edit_View {
 		echo "\t\t<tr>\n";
 		for ( $col_idx = 0; $col_idx < $columns; $col_idx++ ) {
 			//Build Our Header
-			$data_id = $id . '-' . $col_idx;
-			echo '<td><input type="text" id="' . $data_id . '" class="" name="" value="' . esc_attr( $options[$data_id] ) . '" /></td>';
+			$input_id = 'table' .$id . '-col' . $col_idx;
+			$data_id = 'schema[' .$id . '][' . $col_idx . ']';
+			echo '<td><input type="text" id="' . $input_id . '" class="" name="' . $data_id . '" value="' . esc_attr( $options[$data_id] ) . '" /></td>';
 		}
 		echo "\t\t" . '</tr>' . "\n";
 		echo '</tbody>' . "\n";
@@ -76,8 +78,55 @@ class TablePress_Schema_Data_View extends TablePress_Edit_View {
 		echo '<input type="hidden" id="number-columns" name="table[number][columns]" value="' . $columns . '" />';
 		echo '<input type="submit" value="Save Schema Data" class="button button-large submit_schema_data" name="submit_schema_data" />';
 
+		// Testing $_POST
 		echo '<pre>' . "\n";
-		print_r($options);
+		echo '</h3>' . 'Testing $_POST: Start' . '</h3>' . "\n";
+		if ( isset( $_POST ) ) {
+			print_r($_POST);
+		}
+		echo '</h3>' . 'Testing $_POST: End' . '</h3>' . "\n";
+		echo '</pre>' . "\n";
+
+		// Testing $_POST['submit_schema_data']
+		echo '<pre>' . "\n";
+		echo '</h3>' . 'Testing $_POST["submit_schema_data"]: Start' . '</h3>' . "\n";
+		if ( isset( $_POST['submit_schema_data'] ) ) {
+			print_r( $_POST['submit_schema_data'] );
+		}
+		echo '</h3>' . 'Testing $_POST["submit_schema_data"]: End' . '</h3>' . "\n";
+		echo '</pre>' . "\n";
+
+		// Testing $_POST['table']
+		echo '<pre>' . "\n";
+		echo '</h3>' . 'Testing $_POST["table"]: Start' . '</h3>' . "\n";
+		if ( isset( $_POST['table'] ) ) {
+			print_r( $_POST['table'] );
+		}
+		echo '</h3>' . 'Testing $_POST["table"]: End' . '</h3>' . "\n";
+		echo '</pre>' . "\n";
+
+		// Testing  $_POST['table']['id']
+		echo '<pre>' . "\n";
+		echo '</h3>' . 'Testing  $_POST["table"]["id"] : Start' . '</h3>' . "\n";
+		if ( isset( $_POST['table']['id'] ) ) {
+			print_r( $_POST['table']['id'] );
+		}
+		echo '</h3>' . 'Testing  $_POST["table"]["id"] : End' . '</h3>' . "\n";
+		echo '</pre>' . "\n";
+
+		// Testing $edit_table = wp_unslash( $_POST['table'] )
+		echo '<pre>' . "\n";
+		echo '</h3>' . 'Testing $edit_table = wp_unslash( $_POST["table"] ): Start' . '</h3>' . "\n";
+			$edit_table = wp_unslash( $_POST['table'] );
+			print_r($edit_table);
+		echo '</h3>' . 'Testing $edit_table = wp_unslash( $_POST["table"] ): End' . '</h3>' . "\n";
+		echo '</pre>' . "\n";
+
+		// Testing $options
+		echo '<pre>' . "\n";
+		echo '</h3>' . 'Testing $options: Start' . '</h3>' . "\n";
+			print_r($options);
+		echo '</h3>' . 'Testing $options: End' . '</h3>' . "\n";
 		echo '</pre>' . "\n";
 
 

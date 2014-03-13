@@ -39,11 +39,11 @@ class TablePress_Schema_Data {
 	 */
 	public function __construct() {
 
-		// @TODO Need to build this hook once I figure out how I am saving data
+		// @TODO: Need to build this hook once I figure out how I am saving data
 		// Register hook to remove Schema Data, when the plugin is deactivated
 		//register_deactivation_hook( __FILE__, array( __CLASS__, 'deactivation_hook' ) );
 
-		// @TODO Need to build this once we get data to save
+		// @TODO: Need to build this once we get data to save
 		// Adding a filter to tablepress_cell_css_class in class-render.php
 		// add_filter( '', array( __CLASS__, '' ) );
 		// add_action( '', array( __CLASS__, '' ) );
@@ -56,7 +56,7 @@ class TablePress_Schema_Data {
 
 	/**
 	 *
-	 * @TODO Will build this once I figure out a solid way to save data.
+	 * @TODO: Will build this once I figure out a solid way to save data.
 	 *
 	 * Remove Schema Data on plugin deactivation, and delete options
 	 *
@@ -80,7 +80,7 @@ class TablePress_Schema_Data {
 		add_filter( 'tablepress_load_class_name', array( $this, 'change_view_edit_class_name' ) );
 
 		//
-		add_action( 'admin_post_tablepress_import', array( $this, 'handle_post_action_schema_data' ), 9 ); // do this before intended TablePress method is called, to be able to remove the action
+		add_action( 'admin_post_tablepress_edit', array( $this, 'handle_post_action_schema_data' ), 9 ); // do this before intended TablePress method is called, to be able to remove the action
 	}
 
 	/**
@@ -114,12 +114,16 @@ class TablePress_Schema_Data {
 	 * @since 1.0.0
 	 */
 	public function handle_post_action_schema_data() {
+
 		if ( ! isset( $_POST['submit_schema_data'] ) ) {
 			return;
 		}
-
 		// remove TablePress Import action handling
 		remove_action( 'admin_post_tablepress_import', array( TablePress::$controller, 'handle_post_action_edit' ) );
+
+		$table = $_POST['table'];
+		$id = $_POST['table']['id'];
+		$edit_table = wp_unslash( $_POST['table'] );
 
 		TablePress::check_nonce( 'edit', $edit_table['id'], 'nonce-edit-table' );
 
@@ -127,22 +131,17 @@ class TablePress_Schema_Data {
 			wp_die( __( 'You do not have sufficient permissions to access this page.', 'default' ) );
 		}
 
-		if ( empty( $_POST['schema_data'] ) || ! is_array( $_POST['schema_data'] ) ) {
-			TablePress::redirect( array( 'action' => 'import', 'message' => 'error_schema_data' ) );
-		} else {
-			$auto_import = stripslashes_deep( $_POST['schema_data'] );
+		$columns = count( $table[0] );
+		$schemadata_fields = array( );
+		for ( $col_idx = 0; $col_idx < $columns; $col_idx++ ) {
+			$schemadata_fields[] = 'schema[' .$id . '][' . $col_idx . ']';
+		}
+		foreach ( $schemadata_fields as $option ) {
+			$edit_table['options'][ $option ] = ( isset( $edit_table['options'][ $option ] ) && 'true' === $edit_table['options'][ $option ] );
 		}
 
-		$params = array(
-			'option_name' => 'tablepress_schema_data',
-			'default_value' => array()
-		);
+		TablePress::redirect( array( 'action' => 'edit', 'table_id' => $id, 'message' => 'success_schema_data' ) );
 
-		$schema_data = TablePress::load_class( 'TablePress_WP_Option', 'class-wp_option.php', 'classes', $params );
-
-		$result = $schema_data->update( $config );
-
-		TablePress::redirect( array( 'action' => 'import', 'message' => 'success_schema_data' ) );
 	}
 
 } // end class

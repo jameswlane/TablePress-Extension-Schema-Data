@@ -80,7 +80,7 @@ class TablePress_Schema_Data {
 		add_filter( 'tablepress_load_class_name', array( $this, 'change_view_edit_class_name' ) );
 
 		//
-		add_action( 'admin_post_tablepress_import', array( $this, 'handle_post_action_auto_import' ), 9 ); // do this before intended TablePress method is called, to be able to remove the action
+		add_action( 'admin_post_tablepress_import', array( $this, 'handle_post_action_schema_data' ), 9 ); // do this before intended TablePress method is called, to be able to remove the action
 	}
 
 	/**
@@ -113,7 +113,7 @@ class TablePress_Schema_Data {
 	 *
 	 * @since 1.0.0
 	 */
-	public function handle_post_action_auto_import() {
+	public function handle_post_action_schema_data() {
 		if ( ! isset( $_POST['submit_schema_data'] ) ) {
 			return;
 		}

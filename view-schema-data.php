@@ -1,10 +1,10 @@
 <?php
 /**
- * Auto Import Table View
+ * TablesPress Schema Data View
  *
  * @package TablePress
- * @subpackage Auto Import Table View
- * @author Tobias Bäthge
+ * @subpackage TablesPress Schema Data View
+ * @author James W. Lane
  * @since 1.0.0
  */
 

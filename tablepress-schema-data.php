@@ -95,6 +95,7 @@ class TablePress_Schema_Data {
 		}
 	}
 
+
 	/**
 	 *
 	 * @TODO: Will build this once I figure out a solid way to save data.
@@ -151,15 +152,34 @@ class TablePress_Schema_Data {
 	 */
 	public function run() {
 
-		// Change View Edit file path, to load extended view
-		add_filter( 'tablepress_load_file_full_path', array( $this, 'change_edit_view_full_path' ), 10, 3 );
+		add_filter( 'tablepress_load_file_full_path', array( $this, 'render_full_path' ), 10, 3 );
+		add_filter( 'tablepress_load_class_name', array( $this, 'render_class_name' ) );
 
+
+		// Change View Edit file path, to load extended view
 		// Change View Edit class name, to load extended view
+		add_filter( 'tablepress_load_file_full_path', array( $this, 'change_edit_view_full_path' ), 10, 3 );
 		add_filter( 'tablepress_load_class_name', array( $this, 'change_view_edit_class_name' ) );
 
 		//
 		add_action( 'admin_post_tablepress_edit', array( $this, 'handle_post_action_schema_data' ), 9 ); // do this before intended TablePress method is called, to be able to remove the action
 	}
+
+	public function render_full_path( $full_path, $file, $folder ) {
+		if ( 'class-render.php' == $file ) {
+			require_once $full_path; // load desired file first, as we derive from it in the new $full_path file
+			$full_path = plugin_dir_path( __FILE__ ) . 'render-schema-data.php';
+		}
+		return $full_path;
+	}
+	public function render_class_name( $class ) {
+		if ( 'TablePress_Render' == $class ) {
+			$class = 'TablePress_Render_Schema_Data';
+		}
+		return $class;
+	}
+
+
 
 	/**
 	 * Change View Edit file path, to load extended view
@@ -192,7 +212,6 @@ class TablePress_Schema_Data {
 	 * @since 1.0.0
 	 */
 	public function handle_post_action_schema_data() {
-		echo '<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />';
 		if ( ! isset( $_POST['submit_schema_data'] ) ) {
 			echo 'Houston we have a problem!';
 		}
@@ -246,7 +265,7 @@ class TablePress_Schema_Data {
 				);
 		}elseif ( empty( $mylink ) &&  empty( $schemadata_fields ) ){
 
-		// Do nothing!
+			TablePress::redirect( array( 'action' => 'import', 'message' => 'error_schema_data' ) );
 
 		}
 
@@ -258,3 +277,24 @@ class TablePress_Schema_Data {
 
 // Bootstrap, instantiates the plugin
 new TablePress_Schema_Data;
+
+/**
+ * Store our table name in $wpdb with correct prefix
+ * Prefix will vary between sites so hook onto switch_blog too
+ * @since 1.0
+*/
+/*
+function wptuts_register_activity_log_table(){
+    global $wpdb;
+    $wpdb->wptuts_activity_log = "{$wpdb->prefix}wptuts_activity_log";
+}
+add_action( 'init', 'wptuts_register_activity_log_table',1);
+add_action( 'switch_blog', 'wptuts_register_activity_log_table');
+*/
+/*
+$schema_data = TablePress::load_class( 'TablePress_WP_Option', 'class-wp_option.php', 'classes', $params );
+
+$result = $schema_data->update( $config );
+
+TablePress::redirect( array( 'action' => 'edit', 'table_id' => $id, 'message' => 'success_schema_data' ) );
+*/

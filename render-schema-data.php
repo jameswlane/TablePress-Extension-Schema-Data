@@ -2,6 +2,10 @@
 /**
  * TablesPress Render Schema Data class
  *
+ * @package TablePress
+ * @subpackage TablesPress Schema Data View
+ * @author James W. Lane
+ *
  * @since 1.0.0
  */
 

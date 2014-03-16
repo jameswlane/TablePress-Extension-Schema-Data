@@ -54,9 +54,9 @@ class TablePress_Schema_Data_View extends TablePress_Edit_View {
 		$rows = count( $table );
 		$columns = count( $table[0] );
 		global $wpdb;
-		$mylink = $wpdb->get_var("SELECT schema_data FROM {$wpdb->prefix}tablepress_schema_data WHERE table_id = $id");
-		if ($mylink != null) {
-			$session_data = unserialize($mylink);
+		$schema_db_data = $wpdb->get_var("SELECT schema_data FROM {$wpdb->prefix}tablepress_schema_data WHERE table_id = $id");
+		if ($schema_db_data != null) {
+			$session_data = unserialize($schema_db_data);
 		}
 		echo '<table class="widefat" cellspacing="0">' . "\n";
 		echo '<tr id="">' . "\n";

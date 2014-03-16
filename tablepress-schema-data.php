@@ -236,9 +236,9 @@ class TablePress_Schema_Data {
 		$schemadata_fields = serialize($schemadata_fields);
 		global $wpdb;
 
-		$mylink = $wpdb->get_var("SELECT schema_data FROM {$wpdb->prefix}tablepress_schema_data WHERE table_id = $id");
+		$schema_db_data = $wpdb->get_var("SELECT schema_data FROM {$wpdb->prefix}tablepress_schema_data WHERE table_id = $id");
 
-		if ( empty( $mylink ) &&  !empty( $schemadata_fields ) ){
+		if ( empty( $schema_db_data ) &&  !empty( $schemadata_fields ) ){
 			$wpdb->insert(
 				"{$wpdb->prefix}tablepress_schema_data",
 				array(
@@ -250,7 +250,7 @@ class TablePress_Schema_Data {
 					'%s'
 				)
 			);
-		}elseif ( !empty( $mylink ) &&  !empty( $schemadata_fields ) ){
+		}elseif ( !empty( $schema_db_data ) &&  !empty( $schemadata_fields ) ){
 				$wpdb->update(
 					"{$wpdb->prefix}tablepress_schema_data",
 					array(
@@ -263,7 +263,7 @@ class TablePress_Schema_Data {
 						'%s'
 					)
 				);
-		}elseif ( empty( $mylink ) &&  empty( $schemadata_fields ) ){
+		}elseif ( empty( $schema_db_data ) &&  empty( $schemadata_fields ) ){
 
 			TablePress::redirect( array( 'action' => 'import', 'message' => 'error_schema_data' ) );
 
@@ -277,24 +277,3 @@ class TablePress_Schema_Data {
 
 // Bootstrap, instantiates the plugin
 new TablePress_Schema_Data;
-
-/**
- * Store our table name in $wpdb with correct prefix
- * Prefix will vary between sites so hook onto switch_blog too
- * @since 1.0
-*/
-/*
-function wptuts_register_activity_log_table(){
-    global $wpdb;
-    $wpdb->wptuts_activity_log = "{$wpdb->prefix}wptuts_activity_log";
-}
-add_action( 'init', 'wptuts_register_activity_log_table',1);
-add_action( 'switch_blog', 'wptuts_register_activity_log_table');
-*/
-/*
-$schema_data = TablePress::load_class( 'TablePress_WP_Option', 'class-wp_option.php', 'classes', $params );
-
-$result = $schema_data->update( $config );
-
-TablePress::redirect( array( 'action' => 'edit', 'table_id' => $id, 'message' => 'success_schema_data' ) );
-*/

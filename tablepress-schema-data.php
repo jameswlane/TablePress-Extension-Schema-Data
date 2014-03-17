@@ -90,9 +90,8 @@ class TablePress_Schema_Data {
 		// add_action( '', array( __CLASS__, '' ) );
 
 		// Load the Schema Data View
-		if ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
-			add_action( 'tablepress_run', array( $this, 'run' ) );
-		}
+		// Load the Schema Data View
+		add_action( 'tablepress_run', array( $this, 'run' ) );
 	}
 
 

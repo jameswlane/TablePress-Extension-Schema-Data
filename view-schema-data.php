@@ -58,6 +58,7 @@ class TablePress_Schema_Data_View extends TablePress_Edit_View {
 		if ($schema_db_data != null) {
 			$session_data = unserialize($schema_db_data);
 		}
+		echo '<span>To find Itemtype and Itemprop visit <a href="https://schema.org/docs/schemas.html">http://schema.org</a></span>' . "\n";
 		echo '<table class="widefat" cellspacing="0">' . "\n";
 		echo '<tr id="">' . "\n";
 		echo '<th>Itemtype</th>' . "\n";

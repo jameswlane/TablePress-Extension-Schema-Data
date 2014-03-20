@@ -90,6 +90,7 @@ class TablePress_Schema_Data {
 		// add_action( '', array( __CLASS__, '' ) );
 
 		// Load the Schema Data View
+		// Load the Schema Data View
 		add_action( 'tablepress_run', array( $this, 'run' ) );
 	}
 
@@ -149,8 +150,6 @@ class TablePress_Schema_Data {
 	 * @since 1.0.0
 	 */
 	public function run() {
-		add_filter('tablepress_admin_view_actions', array( __CLASS__, 'tablepress_schema_data_tab' ), 10, 1  );
-		add_filter( 'tablepress_load_file_full_path', array( $this, 'tablepress_schema_full_path' ), 10, 3 );
 
 		add_filter( 'tablepress_load_file_full_path', array( $this, 'render_full_path' ), 10, 3 );
 		add_filter( 'tablepress_load_class_name', array( $this, 'render_class_name' ) );
@@ -163,31 +162,7 @@ class TablePress_Schema_Data {
 
 		//
 		add_action( 'admin_post_tablepress_edit', array( $this, 'handle_post_action_schema_data' ), 9 ); // do this before intended TablePress method is called, to be able to remove the action
-
-
 	}
-
-    public function tablepress_schema_data_tab( $data ) {
-		$data['schema'] = array(
-				'show_entry' => true,
-				'page_title' => __( 'Schema Data', 'tpsd' ),
-				'admin_menu_title' => __( 'Schema Data', 'tpsd' ),
-				'nav_tab_title' => __( 'Schema Data', 'tpsd' ),
-				'required_cap' => 'tablepress_edit_tables'
-			);
-		return $data;
-	}
-
-	public function tablepress_schema_full_path( $full_path, $file, $folder ) {
-		if ( 'view-schema.php' == $file ) {
-			$full_path = plugin_dir_path( __FILE__ ) . 'view-schema.php';
-		}
-		return $full_path;
-	}
-
-
-
-
 
 	public function render_full_path( $full_path, $file, $folder ) {
 		if ( 'class-render.php' == $file ) {
@@ -296,8 +271,6 @@ class TablePress_Schema_Data {
 		TablePress::redirect( array( 'action' => 'edit', 'table_id' => $id, 'message' => 'success_schema_data' ) );
 
 	}
-
-	// <td> Schema Data is generated here
 
 } // end class
 

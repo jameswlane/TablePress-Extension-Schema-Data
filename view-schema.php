@@ -52,6 +52,8 @@ class TablePress_Schema_View extends TablePress_View {
 	public function postbox_schema_data( $data, $box ) { ?>
 
 	<span>Hello World</span>
+	<span>Hello World</span>
+
 
 <?php	}
 

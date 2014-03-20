@@ -90,7 +90,6 @@ class TablePress_Schema_Data {
 		// add_action( '', array( __CLASS__, '' ) );
 
 		// Load the Schema Data View
-		// Load the Schema Data View
 		add_action( 'tablepress_run', array( $this, 'run' ) );
 	}
 

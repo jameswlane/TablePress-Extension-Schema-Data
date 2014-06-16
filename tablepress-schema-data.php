@@ -3,7 +3,7 @@
 Plugin Name: TablePress Extension: Schema Data
 Plugin URI: http://tablepress.org/extensions/
 Description: Extension for TablePress to allow adding Schema.org data to tables
-Version: 1.0.0
+Version: 1.1.0
 Author: James W. Lane
 Author URI: http://jameswlane.com/
 */
@@ -41,7 +41,7 @@ class TablePress_Schema_Data {
 	 *
 	 * @const string
 	 */
-	const PLUGIN_VERSION = '1.0.0';
+	const PLUGIN_VERSION = '1.1.0';
 
 	/**
 	 * TablePress Extension: Schema Data internal plugin version ("options scheme" version)
@@ -89,7 +89,6 @@ class TablePress_Schema_Data {
 		// add_filter( '', array( __CLASS__, '' ) );
 		// add_action( '', array( __CLASS__, '' ) );
 
-		// Load the Schema Data View
 		// Load the Schema Data View
 		add_action( 'tablepress_run', array( $this, 'run' ) );
 	}
